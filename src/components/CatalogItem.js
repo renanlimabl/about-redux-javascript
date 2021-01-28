@@ -1,13 +1,13 @@
 import React from 'react';
 
-const CatalogItem = () => {
+const CatalogItem = ({ product }) => {
   return (
     <article>
-      <strong>Casaco Maneiro</strong> {" - "}
-      <span>30,50</span> {" - "}
+      <strong>{product.title}</strong> {" - "}
+      <span>{product.price}</span> {" - "}
       <button type="button">
         Comprar
-        </button>
+      </button>
     </article>
   )
 }

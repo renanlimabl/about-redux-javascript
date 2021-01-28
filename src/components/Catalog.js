@@ -1,16 +1,28 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+// import { useSelector } from 'react-redux';
 import CatalogItem from './CatalogItem';
+import api from '../services/api';
 
 const Catalog = () => {
-  const cart = useSelector(state => state.cart)
+  const [catalog, setCatalog] = useState([])
+  // const cart = useSelector(state => state.cart)
 
-  console.log(cart);
+
+  // segundo parâmetro vazio, pq só quero executar 1x
+  useEffect(() => {
+    api.get('products').then(response => {
+      setCatalog(response.data)
+    })
+  }, [])
+
+
 
   return (
     <main>
       <h1>Catalog</h1>
-      <CatalogItem />
+      {catalog.map(product => (
+        <CatalogItem key={product.id} product={product} />
+      ))}
     </main>
   )
 }
