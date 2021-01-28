@@ -1,21 +1,50 @@
 import { ActionTypes } from './actions';
 
 const INITIAL_STATE = {
-  items: []
+  items: [],
+  failedStockCheck: []
 }
 
 const cart = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case ActionTypes.addProductToCartRequest: {
+
+    case ActionTypes.addProductToCartSuccess: {
       const { product } = action.payload;
+
+      const productInCartIndex = state.items.findIndex(item =>
+        item.product.id === product.id
+      );
+
+      // Se já existir esse produto no carrinho, precisamos incrementar uma quantidade.
+      if (productInCartIndex >= 0) {
+        return {
+          ...state,
+          items: [
+            ...state.items,
+            state.items[productInCartIndex].quantity += 1
+          ]
+        }
+      } else {
+        return {
+          ...state,
+          items: [
+            ...state.items,
+            {
+              product,
+              quantity: 1
+            }
+          ]
+        }
+      }
+    }
+
+    case ActionTypes.addProductToCartFailure: {
+      console.log('failure', action.payload)
       return {
         ...state,
-        items: [
-          ...state.items,
-          {
-            product,
-            quantity: 1
-          }
+        failedStockCheck: [
+          ...state.failedStockCheck,
+          action.payload.productId
         ]
       }
     }

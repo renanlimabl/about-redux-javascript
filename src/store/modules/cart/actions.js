@@ -21,3 +21,12 @@ export function addProductToCartSuccess(product) {
     }
   }
 }
+
+export function addProductToCartFailure(productId) {
+  return {
+    type: ActionTypes.addProductToCartFailure,
+    payload: {
+      productId,
+    }
+  }
+}
