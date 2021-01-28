@@ -1,58 +1,58 @@
 import { ActionTypes } from './actions';
 
+import produce from 'immer';
+
 const INITIAL_STATE = {
   items: [],
   failedStockCheck: []
 }
 
 const cart = (state = INITIAL_STATE, action) => {
-  switch (action.type) {
 
-    case ActionTypes.addProductToCartSuccess: {
-      const { product } = action.payload;
+  return produce(state, draft => {
+    switch (action.type) {
 
-      const productInCartIndex = state.items.findIndex(item =>
-        item.product.id === product.id
-      );
+      case ActionTypes.addProductToCartSuccess: {
+        const { product } = action.payload;
 
-      // Se já existir esse produto no carrinho, precisamos incrementar uma quantidade.
-      if (productInCartIndex >= 0) {
-        return {
-          ...state,
-          items: [
-            ...state.items,
-            state.items[productInCartIndex].quantity += 1
-          ]
+        const productInCartIndex = state.items.findIndex(item =>
+          item.product.id === product.id
+        );
+
+        // Se já existir esse produto no carrinho, precisamos incrementar uma quantidade.
+        if (productInCartIndex >= 0) {
+          draft.items[productInCartIndex].quantity += 1
+        } else {
+          return {
+            ...state,
+            items: [
+              ...state.items,
+              {
+                product,
+                quantity: 1
+              }
+            ]
+          }
         }
-      } else {
+        break;
+      }
+
+      case ActionTypes.addProductToCartFailure: {
+        console.log('failure', action.payload)
         return {
           ...state,
-          items: [
-            ...state.items,
-            {
-              product,
-              quantity: 1
-            }
+          failedStockCheck: [
+            ...state.failedStockCheck,
+            action.payload.productId
           ]
         }
       }
-    }
 
-    case ActionTypes.addProductToCartFailure: {
-      console.log('failure', action.payload)
-      return {
-        ...state,
-        failedStockCheck: [
-          ...state.failedStockCheck,
-          action.payload.productId
-        ]
+      default: {
+        return draft;
       }
     }
-
-    default: {
-      return state;
-    }
-  }
+  })
 }
 
 export default cart;
