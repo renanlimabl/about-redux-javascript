@@ -21,7 +21,17 @@ const cart = (state = INITIAL_STATE, action) => {
 
         // Se já existir esse produto no carrinho, precisamos incrementar uma quantidade.
         if (productInCartIndex >= 0) {
-          draft.items[productInCartIndex].quantity += 1
+          // draft.items[productInCartIndex].quantity += 1
+          return {
+            ...state,
+            items: state.items.map((item =>
+              item.product.id === product.id
+                ?
+                { ...item, quantity: item.quantity + 1 }
+                :
+                item
+            ))
+          }
         } else {
           return {
             ...state,
@@ -34,7 +44,7 @@ const cart = (state = INITIAL_STATE, action) => {
             ]
           }
         }
-        break;
+        // break;
       }
 
       case ActionTypes.addProductToCartFailure: {
